@@ -1,3 +1,4 @@
+import os
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -5,10 +6,12 @@ from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'  # this redirects unauthorized users
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
