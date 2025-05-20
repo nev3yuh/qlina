@@ -33,6 +33,13 @@ class User(db.Model, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+    
+class Meal(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    cook_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -102,6 +109,32 @@ def dashboard():
 def init_db():
     db.create_all()
     return "✅ PostgreSQL tables created!"
+
+@app.route('/post_meal', methods=['GET', 'POST'])
+@login_required
+def post_meal():
+    if current_user.user_type != 'cook':
+        return "Unauthorized"
+
+    if request.method == 'POST':
+        title = request.form['title']
+        description = request.form['description']
+        meal = Meal(title=title, description=description, cook_id=current_user.id)
+        db.session.add(meal)
+        db.session.commit()
+        return redirect('/cook_dashboard')
+    
+    return render_template('post_meal.html')
+
+@app.route('/meals')
+@login_required
+def meals():
+    if current_user.user_type != 'guest':
+        return "Unauthorized"
+
+    meal_list = Meal.query.all()
+    return render_template('meals.html', meals=meal_list)
+
 
 if __name__ == '__main__':
     with app.app_context():
