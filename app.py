@@ -61,7 +61,7 @@ def signup():
     db.session.commit()
 
     login_user(new_user)
-    return redirect('/dashboard')
+    return redirect(f"/{user_type}_dashboard")
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -72,7 +72,7 @@ def login():
 
         if user and user.check_password(password):
             login_user(user)
-            return redirect('/dashboard')
+            return redirect(f"/{user.user_type}_dashboard")
         return "Invalid credentials"
     
     return render_template('login.html')
@@ -83,24 +83,26 @@ def logout():
     logout_user()
     return redirect('/')
 
-@app.route("/cook_dashboard")
+@app.route('/cook_dashboard')
 @login_required
 def cook_dashboard():
-    return f"Cook dashboard: Welcome {current_user.name}"
+    return render_template("cook_dashboard.html", current_user=current_user)
 
-@app.route("/guest_dashboard")
+@app.route('/guest_dashboard')
 @login_required
 def guest_dashboard():
-    return f"Guest dashboard: Welcome {current_user.name}"
+    return render_template("guest_dashboard.html", current_user=current_user)
 
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    return redirect(f"/{current_user.user_type}_dashboard")
 
 @app.route("/init-db")
 def init_db():
     db.create_all()
     return "✅ PostgreSQL tables created!"
 
-
-# Run the app
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
