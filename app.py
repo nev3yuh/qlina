@@ -88,6 +88,11 @@ def logout():
 def dashboard():
     return f"Welcome {current_user.name} ({current_user.user_type})"
 
+@app.route("/initdb")
+def initdb():
+    db.create_all()
+    return "Database initialized!"
+
 # Run the app
 if __name__ == '__main__':
     with app.app_context():
