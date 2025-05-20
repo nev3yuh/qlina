@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Guest Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Guest Dashboard</h1>
+        <p>Welcome {{ current_user.name }}!</p>
+        <p>Start browsing home-cooked meals around you.</p>
+
+        <a href="/logout">Logout</a>
+    </div>
+</body>
+</html>

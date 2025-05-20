@@ -83,10 +83,16 @@ def logout():
     logout_user()
     return redirect('/')
 
-@app.route('/dashboard')
+@app.route("/cook_dashboard")
 @login_required
-def dashboard():
-    return f"Welcome {current_user.name} ({current_user.user_type})"
+def cook_dashboard():
+    return f"Cook dashboard: Welcome {current_user.name}"
+
+@app.route("/guest_dashboard")
+@login_required
+def guest_dashboard():
+    return f"Guest dashboard: Welcome {current_user.name}"
+
 
 @app.route("/init-db")
 def init_db():
